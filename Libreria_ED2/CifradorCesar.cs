@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using System.IO;
 namespace Libreria_ED2
 {
     public class CifradorCesar
@@ -35,6 +35,50 @@ namespace Libreria_ED2
             {
                 abcModPrevio.AddLast(Convert.ToByte(i));
             }
+
+            foreach (var item in eliminarRepetidosClave)
+            {
+                abcModPrevio.Remove(item.Value);
+                abcModPrevio.AddFirst(item.Value);
+            }
+
+            foreach (var item in abcModPrevio)
+            {
+                abcModificado.Add(iterador, item);
+                iterador++;
+            }
+
+            BinaryReader br = new BinaryReader(new FileStream(dirLectura, FileMode.OpenOrCreate));
+            BinaryWriter bw = new BinaryWriter(new FileStream(dirEscritura, FileMode.Create));
+            br.Close();
+            bw.Close();
+            long posLectura = 0;
+            long posEscritura = 0;
+            byte[] bytesLectura = new byte[longitudBuffer];
+            byte[] bytesEscritura;
+
+
+            do
+            {
+
+                br = new BinaryReader(new FileStream(dirLectura, FileMode.OpenOrCreate));
+                br.BaseStream.Position = posLectura;
+                cantLeida = br.Read(bytesLectura);
+                posLectura = br.BaseStream.Position;
+                br.Close();
+                bytesEscritura = new byte[cantLeida];
+                for (int i = 0; i < cantLeida; i++)
+                {
+                    bytesEscritura[i] = abcModificado[bytesLectura[i]];
+                }
+
+                bw = new BinaryWriter(new FileStream(dirEscritura, FileMode.OpenOrCreate));
+                bw.BaseStream.Position = posEscritura;
+                bw.Write(bytesEscritura);
+                posEscritura = bw.BaseStream.Position;
+                bw.Close();
+
+            } while (cantLeida == longitudBuffer);
 
         }
     }
