@@ -13,7 +13,7 @@ namespace Libreria_ED2
             longitudBuffer = _longitudBuffer;
         }
 
-        public void Cifrar(string dirLectura, string dirEscritura, string clave)
+        public void Cifrar(string dirLectura, string dirEscritura, string clave, string nombre)
         {
 
             char[] letrasClave = clave.ToCharArray();
@@ -49,7 +49,7 @@ namespace Libreria_ED2
             }
 
             BinaryReader br = new BinaryReader(new FileStream(dirLectura, FileMode.OpenOrCreate));
-            BinaryWriter bw = new BinaryWriter(new FileStream(dirEscritura, FileMode.Create));
+            BinaryWriter bw = new BinaryWriter(new FileStream(dirEscritura+nombre+".csr", FileMode.Create));
             br.Close();
             bw.Close();
             long posLectura = 0;
@@ -72,7 +72,7 @@ namespace Libreria_ED2
                     bytesEscritura[i] = abcModificado[bytesLectura[i]];
                 }
 
-                bw = new BinaryWriter(new FileStream(dirEscritura, FileMode.OpenOrCreate));
+                bw = new BinaryWriter(new FileStream(dirEscritura + nombre + ".csr", FileMode.OpenOrCreate));
                 bw.BaseStream.Position = posEscritura;
                 bw.Write(bytesEscritura);
                 posEscritura = bw.BaseStream.Position;
@@ -82,7 +82,7 @@ namespace Libreria_ED2
 
         }
 
-        public void Decifrar(string dirLectura, string dirEscritura, string clave)
+        public void Decifrar(string dirLectura, string dirEscritura, string clave, string nombre)
         {
 
             char[] letrasClave = clave.ToCharArray();
@@ -118,7 +118,7 @@ namespace Libreria_ED2
             }
 
             BinaryReader br = new BinaryReader(new FileStream(dirLectura, FileMode.OpenOrCreate));
-            BinaryWriter bw = new BinaryWriter(new FileStream(dirEscritura, FileMode.Create));
+            BinaryWriter bw = new BinaryWriter(new FileStream(dirEscritura + nombre + ".txt", FileMode.Create));
             br.Close();
             bw.Close();
             long posLectura = 0;
@@ -140,7 +140,7 @@ namespace Libreria_ED2
                     bytesEscritura[i] = abcModificado[bytesLectura[i]];
                 }
 
-                bw = new BinaryWriter(new FileStream(dirEscritura, FileMode.OpenOrCreate));
+                bw = new BinaryWriter(new FileStream(dirEscritura + nombre + ".txt", FileMode.OpenOrCreate));
                 bw.BaseStream.Position = posEscritura;
                 bw.Write(bytesEscritura);
                 posEscritura = bw.BaseStream.Position;
