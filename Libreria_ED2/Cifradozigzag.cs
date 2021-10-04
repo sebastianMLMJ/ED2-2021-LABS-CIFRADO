@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-namespace Libreria_ED2
+using System.Linq;
 
+namespace Libreria_ED2
+{ 
 public class CifradorZigzag
 {
 
@@ -111,4 +113,5 @@ public class CifradorZigzag
         File.WriteAllText(dirEscritura + nombre + ".txt", DescifradoF);
 
     }
+}
 }

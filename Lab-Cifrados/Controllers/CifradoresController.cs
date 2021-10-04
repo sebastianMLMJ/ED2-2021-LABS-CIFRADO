@@ -42,13 +42,32 @@ namespace Lab_Cifrados.Controllers
                 string[] arregloNombre = nombreArchivo.Split('.');
                 nombreArchivo = arregloNombre[0];
 
-                CifradorCesar cesar = new CifradorCesar(1024);
-                cesar.Cifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\",key,nombreArchivo);
-      
-                var bytesArchivo = System.IO.File.ReadAllBytesAsync(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".csr");
-                var bytes = System.IO.File.ReadAllBytes(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".csr");
-                var objetoStream = new MemoryStream(bytes);
-                return File(objetoStream, "application/octet-stream", nombreArchivo + ".csr");
+                if (method=="César"||method == "césar"||method == "Cesar"||method == "cesar")
+                {
+                    CifradorCesar cesar = new CifradorCesar(1024);
+                    cesar.Cifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", key, nombreArchivo);
+
+                    var bytesArchivo = System.IO.File.ReadAllBytesAsync(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".csr");
+                    var bytes = System.IO.File.ReadAllBytes(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".csr");
+                    var objetoStream = new MemoryStream(bytes);
+                    return File(objetoStream, "application/octet-stream", nombreArchivo + ".csr");
+                }
+                else if (method=="ZigZag"|| method == "zigzag")
+                {
+                    CifradorZigzag zigzag = new CifradorZigzag();
+                    zigzag.Cifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", Convert.ToInt32(key), nombreArchivo);
+
+                    var bytesArchivo = System.IO.File.ReadAllBytesAsync(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".zz");
+                    var bytes = System.IO.File.ReadAllBytes(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".zz");
+                    var objetoStream = new MemoryStream(bytes);
+                    return File(objetoStream, "application/octet-stream", nombreArchivo + ".zz");
+                }
+                else
+                {
+                    return StatusCode(500);
+
+                }
+
             }
             else
             {
@@ -76,14 +95,34 @@ namespace Lab_Cifrados.Controllers
                 string nombreArchivo = objetoArchivo.File.FileName;
                 string[] arregloNombre = nombreArchivo.Split('.');
                 nombreArchivo = arregloNombre[0];
+                string extension = arregloNombre[1];
 
-                CifradorCesar cesar = new CifradorCesar(1024);
-                cesar.Decifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", key, nombreArchivo);
+                if (extension=="csr")
+                {
+                    CifradorCesar cesar = new CifradorCesar(1024);
+                    cesar.Decifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", key, nombreArchivo);
 
-                var bytesArchivo = System.IO.File.ReadAllBytesAsync(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".txt");
-                var bytes = System.IO.File.ReadAllBytes(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".txt");
-                var objetoStream = new MemoryStream(bytes);
-                return File(objetoStream, "application/octet-stream", nombreArchivo + ".txt");
+                    var bytesArchivo = System.IO.File.ReadAllBytesAsync(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".txt");
+                    var bytes = System.IO.File.ReadAllBytes(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".txt");
+                    var objetoStream = new MemoryStream(bytes);
+                    return File(objetoStream, "application/octet-stream", nombreArchivo + ".txt");
+                }
+                else if(extension=="zz")
+                {
+                    CifradorZigzag zigzag = new CifradorZigzag();
+                    zigzag.Descifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", Convert.ToInt32(key), nombreArchivo);
+
+                    var bytesArchivo = System.IO.File.ReadAllBytesAsync(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".txt");
+                    var bytes = System.IO.File.ReadAllBytes(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".txt");
+                    var objetoStream = new MemoryStream(bytes);
+                    return File(objetoStream, "application/octet-stream", nombreArchivo + ".txt");
+
+                }
+                else
+                {
+                    return StatusCode(500);
+                }
+                
             }
             else
             {
