@@ -23,7 +23,7 @@ namespace Lab_Cifrados.Controllers
 
         [HttpPost]
         [Route("cipher/{method}")]
-        public async Task<IActionResult> Comprimir([FromForm] SubirArchivo objetoArchivo, string method, [FromForm]string key)
+        public async Task<IActionResult> Comprimir([FromForm] SubirArchivo objetoArchivo, string method, [FromForm]string Key)
         {
             if (objetoArchivo.File.Length > 0)
             {
@@ -45,7 +45,7 @@ namespace Lab_Cifrados.Controllers
                 if (method=="César"||method == "césar"||method == "Cesar"||method == "cesar")
                 {
                     CifradorCesar cesar = new CifradorCesar(1024);
-                    cesar.Cifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", key, nombreArchivo);
+                    cesar.Cifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", Key, nombreArchivo);
 
                     var bytesArchivo = System.IO.File.ReadAllBytesAsync(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".csr");
                     var bytes = System.IO.File.ReadAllBytes(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".csr");
@@ -55,7 +55,7 @@ namespace Lab_Cifrados.Controllers
                 else if (method=="ZigZag"|| method == "zigzag")
                 {
                     CifradorZigzag zigzag = new CifradorZigzag();
-                    zigzag.Cifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", Convert.ToInt32(key), nombreArchivo);
+                    zigzag.Cifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", Convert.ToInt32(Key), nombreArchivo);
 
                     var bytesArchivo = System.IO.File.ReadAllBytesAsync(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".zz");
                     var bytes = System.IO.File.ReadAllBytes(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".zz");
@@ -77,7 +77,7 @@ namespace Lab_Cifrados.Controllers
 
         [HttpPost]
         [Route("decipher")]
-        public async Task<IActionResult> descomprimir([FromForm] SubirArchivo objetoArchivo,[FromForm] string key)
+        public async Task<IActionResult> descomprimir([FromForm] SubirArchivo objetoArchivo,[FromForm] string Key)
         {
             if (objetoArchivo.File.Length > 0)
             {
@@ -100,7 +100,7 @@ namespace Lab_Cifrados.Controllers
                 if (extension=="csr")
                 {
                     CifradorCesar cesar = new CifradorCesar(1024);
-                    cesar.Decifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", key, nombreArchivo);
+                    cesar.Decifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", Key, nombreArchivo);
 
                     var bytesArchivo = System.IO.File.ReadAllBytesAsync(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".txt");
                     var bytes = System.IO.File.ReadAllBytes(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".txt");
@@ -110,7 +110,7 @@ namespace Lab_Cifrados.Controllers
                 else if(extension=="zz")
                 {
                     CifradorZigzag zigzag = new CifradorZigzag();
-                    zigzag.Descifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", Convert.ToInt32(key), nombreArchivo);
+                    zigzag.Descifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", Convert.ToInt32(Key), nombreArchivo);
 
                     var bytesArchivo = System.IO.File.ReadAllBytesAsync(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".txt");
                     var bytes = System.IO.File.ReadAllBytes(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreArchivo + ".txt");
