@@ -6,13 +6,11 @@ namespace Pruebas_Consola
     {
         static void Main(string[] args)
         {
-            //CifradorCesar testercesar = new CifradorCesar(1024);
-            //testercesar.Cifrar("C:\\ABF\\Tarea.txt", "C:\\ABF\\", "dinosaurio", "ejemplocesar");
-            //testercesar.Decifrar("C:\\ABF\\ejemplocesar.csr", "C:\\ABF\\", "dinosaurio", "ejemplocesar");
+            CifradorSDES tester = new CifradorSDES(1024);
 
-            CifradorZigzag testerzigzag = new CifradorZigzag();
-            testerzigzag.Cifrar("C:\\ABF\\Tarea.txt", "C:\\ABF\\", 4, "ejemplozigzag");
-            testerzigzag.Descifrar("C:\\ABF\\ejemplozigzag.zz", "C:\\ABF\\", 4, "decifradozigzag");
+            tester.Cifrar("C:\\ABF\\cuento.txt", "C:\\ABF", "C:\\ABF\\Permutaciones.txt", "ejemplo.txt",364);
+            
+
         }
     }
 }
