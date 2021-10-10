@@ -18,7 +18,6 @@ namespace Libreria_ED2
             //Convirtiendo llave a bits
             string llaveBinaria = Convert.ToString(llave, 2);
             llaveBinaria=llaveBinaria.PadLeft(10, '0');
-            Console.WriteLine(llaveBinaria);
             char[] llavearreglo = llaveBinaria.ToCharArray();
 
             //Configurando permutaciones
@@ -65,10 +64,22 @@ namespace Libreria_ED2
             {
                 llave1 += k1[i].ToString();
             }
-            Console.WriteLine(llave1);
-            var longitud = leftsh1.Length;
+            
+            
 
-          
+            //generando k2
+            char[] leftsh2 = LeftShiftDos(leftsh1);
+            char[] k2 = Permutar(leftsh2, p8);
+
+            string llave2 = "";
+            for (int i = 0; i < k1.Length; i++)
+            {
+                llave2 += k2[i].ToString();
+            }
+
+            Console.WriteLine(llave1);
+            Console.WriteLine(llave2);
+
 
 
         }
@@ -102,6 +113,56 @@ namespace Libreria_ED2
             char primerCaracter = salida1.First.Value;
             salida1.RemoveFirst();
             salida1.AddLast(primerCaracter);
+
+            primerCaracter = salida2.First.Value;
+            salida2.RemoveFirst();
+            salida2.AddLast(primerCaracter);
+
+            char[] union = new char[entrada.Length];
+            int posicion = 0;
+
+            foreach (var item in salida1)
+            {
+                union[posicion] = item;
+                posicion++;
+            }
+            foreach (var item in salida2)
+            {
+                union[posicion] = item;
+                posicion++;
+            }
+
+            return union;
+        }
+
+        private char[] LeftShiftDos(char[] entrada)
+        {
+            int mitad = entrada.Length / 2;
+            LinkedList<char> salida1 = new LinkedList<char>();
+            LinkedList<char> salida2 = new LinkedList<char>();
+
+            for (int i = 0; i < mitad; i++)
+            {
+                salida1.AddLast(entrada[i]);
+            }
+
+            for (int i = mitad; i < entrada.Length; i++)
+            {
+                salida2.AddLast(entrada[i]);
+            }
+
+            char primerCaracter; 
+            primerCaracter = salida1.First.Value;
+            salida1.RemoveFirst();
+            salida1.AddLast(primerCaracter);
+
+            primerCaracter = salida1.First.Value;
+            salida1.RemoveFirst();
+            salida1.AddLast(primerCaracter);
+
+            primerCaracter = salida2.First.Value;
+            salida2.RemoveFirst();
+            salida2.AddLast(primerCaracter);
 
             primerCaracter = salida2.First.Value;
             salida2.RemoveFirst();
