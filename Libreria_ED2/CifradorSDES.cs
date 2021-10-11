@@ -89,6 +89,8 @@ namespace Libreria_ED2
 
             }
             //entp10 = entrada-permutacion10, salp10 = salida permutacion10
+
+            sr.Close();
             char[] entp10 = llavearreglo;
             char[] salp10;
             salp10 = Permutar(entp10, p10);
@@ -111,9 +113,6 @@ namespace Libreria_ED2
             {
                 llave2 += k2[i].ToString();
             }
-
-            Console.WriteLine(llave1);
-            Console.WriteLine(llave2);
 
             BinaryReader br;
             BinaryWriter bw = new BinaryWriter(new FileStream(dirEscritura + nombre + ".sdes", FileMode.Create));
@@ -174,7 +173,6 @@ namespace Libreria_ED2
         }
 
 
-        
 
         public string[] Ronda(char[] entrada,string llave)
         {
@@ -231,6 +229,7 @@ namespace Libreria_ED2
             byte byteSp4 = Convert.ToByte(cadenaSp4, 2);
             byte byte4i = Convert.ToByte(cadena4iniciales, 2);
             resultadoXor = Convert.ToString(byteSp4 ^ byte4i, 2);
+            resultadoXor = resultadoXor.PadLeft(4, '0');
             string[] devolver = new string[2];
             devolver[0] = resultadoXor;
             devolver[1] = cuatrofcad;
