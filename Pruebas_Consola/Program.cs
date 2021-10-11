@@ -14,7 +14,7 @@ namespace Pruebas_Consola
             bw.Write(prueba);
             bw.Close();
             
-            tester.Cifrar("C:\\ABF\\ejemplosdes.txt", "C:\\ABF", "C:\\ABF\\Permutaciones.txt", "ejemplo.txt",364);
+            tester.Cifrar("C:\\ABF\\ejemplosdes.txt", "C:\\ABF\\", "C:\\ABF\\Permutaciones.txt", "cifradosdes",364);
             
 
         }

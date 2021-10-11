@@ -116,7 +116,8 @@ namespace Libreria_ED2
             Console.WriteLine(llave2);
 
             BinaryReader br;
-            BinaryWriter bw;
+            BinaryWriter bw = new BinaryWriter(new FileStream(dirEscritura + nombre + ".sdes", FileMode.Create));
+            bw.Close();
             long posicionLectura=0;
             long posicionEscritura=0;
             byte[] bufferLectura = new byte[1024];
@@ -161,15 +162,19 @@ namespace Libreria_ED2
 
                 }
 
-                
+                bw = new BinaryWriter(new FileStream(dirEscritura + nombre + ".sdes", FileMode.OpenOrCreate));
+                bw.BaseStream.Position = posicionEscritura;
+                bw.Write(bytesEscritura);
+                posicionEscritura = bw.BaseStream.Position;
+                bw.Close();
+
 
             } while (cantidadLeida==longitudBuffer);
 
-
-
-
-
         }
+
+
+        
 
         public string[] Ronda(char[] entrada,string llave)
         {
