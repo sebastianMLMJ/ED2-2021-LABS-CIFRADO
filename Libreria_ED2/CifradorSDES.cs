@@ -433,6 +433,84 @@ namespace Libreria_ED2
             char[] salp10;
             salp10 = Permutar(entp10, p10);
 
+            //generando k1
+            char[] leftsh1 = LeftShiftUno(salp10);
+            char[] k1 = Permutar(leftsh1, p8);
+            string llave1 = "";
+            for (int i = 0; i < k1.Length; i++)
+            {
+                llave1 += k1[i].ToString();
+            }
+
+            //generando k2
+            char[] leftsh2 = LeftShiftDos(leftsh1);
+            char[] k2 = Permutar(leftsh2, p8);
+
+            string llave2 = "";
+            for (int i = 0; i < k1.Length; i++)
+            {
+                llave2 += k2[i].ToString();
+            }
+
+            Console.WriteLine(llave1);
+            Console.WriteLine(llave2);
+
+            BinaryReader br;
+            BinaryWriter bw = new BinaryWriter(new FileStream(dirEscritura + nombre + ".sdes", FileMode.Create));
+            bw.Close();
+            long posicionLectura = 0;
+            long posicionEscritura = 0;
+            byte[] bufferLectura = new byte[1024];
+            int cantidadLeida = 0;
+            string entrada;
+            char[] arregloentrada;
+            do
+            {
+                br = new BinaryReader(new FileStream(dirLectura, FileMode.OpenOrCreate));
+                br.BaseStream.Position = posicionLectura;
+                cantidadLeida = br.Read(bufferLectura);
+                posicionLectura = br.BaseStream.Position;
+                br.Close();
+                byte[] bytesEscritura = new byte[cantidadLeida];
+
+                for (int i = 0; i < cantidadLeida; i++)
+                {
+                    entrada = Convert.ToString(bufferLectura[i], 2);
+                    entrada = entrada.PadLeft(8, '0');
+                    arregloentrada = entrada.ToCharArray();
+                    char[] ipS = Permutar(arregloentrada, ip);
+
+                    string[] ronda1 = Ronda(ipS, llave2);
+                    string swap = ronda1[1] + ronda1[0];
+                    Console.WriteLine(swap);
+                    char[] swapEntrada = swap.ToCharArray();
+
+                    string[] ronda2 = Ronda(swapEntrada, llave1);
+                    string salidaRonda2 = ronda2[0] + ronda2[1];
+                    char[] salidaRonda2C = salidaRonda2.ToCharArray();
+                    char[] SalidaFinal = Permutar(salidaRonda2C, ipinv);
+                    string SalidaFinalString = "";
+
+                    for (int j = 0; j < SalidaFinal.Length; j++)
+                    {
+                        SalidaFinalString += SalidaFinal[j];
+                    }
+
+                    byte byteFinal = Convert.ToByte(SalidaFinalString, 2);
+
+                    bytesEscritura[i] = byteFinal;
+
+                }
+
+                bw = new BinaryWriter(new FileStream(dirEscritura + nombre + ".sdes", FileMode.OpenOrCreate));
+                bw.BaseStream.Position = posicionEscritura;
+                bw.Write(bytesEscritura);
+                posicionEscritura = bw.BaseStream.Position;
+                bw.Close();
+
+
+            } while (cantidadLeida == longitudBuffer);
+
         }
     }
 }
