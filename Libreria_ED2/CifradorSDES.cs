@@ -11,10 +11,12 @@ namespace Libreria_ED2
         string[] swbox2 = { "00", "01", "10", "11", "10", "00", "01", "11", "11", "00", "01", "00", "10", "01", "00", "11" };
         int[] p10;
         int[] p8;
+        int[] p4;
+        int[] ep;
         int[] ip;
         int[] ipinv;
-        int[] ep;
-        int[] p4;
+        
+        
 
 
 
@@ -32,7 +34,7 @@ namespace Libreria_ED2
 
             //Configurando permutaciones
             StreamReader sr = new StreamReader(new FileStream(dirPermutaciones, FileMode.OpenOrCreate));
-            string lineaLectura = sr.ReadLine();
+            
             string permutacion;
             p10 = new int [10];
             p8 = new int[8];
@@ -40,57 +42,104 @@ namespace Libreria_ED2
             ipinv = new int[8];
             ep = new int[8];
             p4 = new int[4];
-            while (lineaLectura!=null)
-            {
-                string[] div1 = lineaLectura.Split(':');
-                string[] div2 = div1[1].Split(',');
-                switch (div1[0])
-                {
-                    case "p10":
-                        for (int i = 0; i < p10.Length; i++)
-                        {
-                            p10[i] = Convert.ToInt32(div2[i]);
-                        }
-                        break;
-                    case "p8":
-                        for (int i = 0; i < p8.Length; i++)
-                        {
-                            p8[i] = Convert.ToInt32(div2[i]);
-                        }
-                        break;
-                    case "ip":
-                        for (int i = 0; i < ip.Length; i++)
-                        {
-                            ip[i] = Convert.ToInt32(div2[i]);
-                        }
-                        break;
-                    case "ip-1":
-                        for (int i = 0; i < ipinv.Length; i++)
-                        {
-                            ipinv[i] = Convert.ToInt32(div2[i]);
-                        }
-                        break;
-                    case "ep":
-                        for (int i = 0; i < ep.Length; i++)
-                        {
-                            ep[i] = Convert.ToInt32(div2[i]);
-                        }
-                        break;
-                    case "p4":
-                        for (int i = 0; i < p4.Length; i++)
-                        {
-                            p4[i] = Convert.ToInt32(div2[i]);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                lineaLectura=sr.ReadLine();
 
+            string lineaLectura = sr.ReadLine();
+            string[] div = lineaLectura.Split(',');
+            for (int i = 0; i < p10.Length; i++)
+            {
+                p10[i] = Convert.ToInt32(div[i]) - 1;
             }
-            //entp10 = entrada-permutacion10, salp10 = salida permutacion10
+            
+            lineaLectura = sr.ReadLine();
+            div = lineaLectura.Split(',');
+            for (int i = 0; i < p8.Length; i++)
+            {
+                p8[i] = Convert.ToInt32(div[i]) - 1;
+            }
+
+            lineaLectura = sr.ReadLine();
+            div = lineaLectura.Split(',');
+            for (int i = 0; i < p4.Length; i++)
+            {
+                p4[i] = Convert.ToInt32(div[i]) - 1;
+            }
+
+            lineaLectura = sr.ReadLine();
+            div = lineaLectura.Split(',');
+            for (int i = 0; i < ep.Length; i++)
+            {
+                ep[i] = Convert.ToInt32(div[i]) - 1;
+            }
+            lineaLectura = sr.ReadLine();
+            div = lineaLectura.Split(',');
+            for (int i = 0; i < ip.Length; i++)
+            {
+                ip[i] = Convert.ToInt32(div[i]) - 1;
+            }
+            lineaLectura = sr.ReadLine();
+            div = lineaLectura.Split(',');
+            for (int i = 0; i < ipinv.Length; i++)
+            {
+                ipinv[i] = Convert.ToInt32(div[i]) - 1;
+            }
+
+
+
+
+
 
             sr.Close();
+            //while (lineaLectura!=null)
+            //{
+            //    string[] div1 = lineaLectura.Split(':');
+            //    string[] div2 = div1[1].Split(',');
+            //    switch (div1[0])
+            //    {
+            //        case "p10":
+            //            for (int i = 0; i < p10.Length; i++)
+            //            {
+            //                p10[i] = Convert.ToInt32(div2[i]);
+            //            }
+            //            break;
+            //        case "p8":
+            //            for (int i = 0; i < p8.Length; i++)
+            //            {
+            //                p8[i] = Convert.ToInt32(div2[i]);
+            //            }
+            //            break;
+            //        case "ip":
+            //            for (int i = 0; i < ip.Length; i++)
+            //            {
+            //                ip[i] = Convert.ToInt32(div2[i]);
+            //            }
+            //            break;
+            //        case "ip-1":
+            //            for (int i = 0; i < ipinv.Length; i++)
+            //            {
+            //                ipinv[i] = Convert.ToInt32(div2[i]);
+            //            }
+            //            break;
+            //        case "ep":
+            //            for (int i = 0; i < ep.Length; i++)
+            //            {
+            //                ep[i] = Convert.ToInt32(div2[i]);
+            //            }
+            //            break;
+            //        case "p4":
+            //            for (int i = 0; i < p4.Length; i++)
+            //            {
+            //                p4[i] = Convert.ToInt32(div2[i]);
+            //            }
+            //            break;
+            //        default:
+            //            break;
+            //    }
+            //    lineaLectura=sr.ReadLine();
+
+            //}
+            //entp10 = entrada-permutacion10, salp10 = salida permutacion10
+
+
             char[] entp10 = llavearreglo;
             char[] salp10;
             salp10 = Permutar(entp10, p10);
@@ -116,9 +165,12 @@ namespace Libreria_ED2
 
             BinaryReader br;
             BinaryWriter bw = new BinaryWriter(new FileStream(dirEscritura + nombre + ".sdes", FileMode.Create));
+            string nombreOriginal = Path.GetFileName(dirLectura);
+            bw.Write(nombreOriginal);
+            long posicionEscritura = bw.BaseStream.Position;
             bw.Close();
+            
             long posicionLectura=0;
-            long posicionEscritura=0;
             byte[] bufferLectura = new byte[1024];
             int cantidadLeida=0;
             string entrada;
@@ -361,9 +413,7 @@ namespace Libreria_ED2
             return union;
         }
 
-
-
-        public void Decifrar(string dirLectura, string dirEscritura, string dirPermutaciones, string nombre, int llave)
+        public string Decifrar(string dirLectura, string dirEscritura, string dirPermutaciones, int llave)
         {
             //Convirtiendo llave a bits
             string llaveBinaria = Convert.ToString(llave, 2);
@@ -372,7 +422,6 @@ namespace Libreria_ED2
 
             //Configurando permutaciones
             StreamReader sr = new StreamReader(new FileStream(dirPermutaciones, FileMode.OpenOrCreate));
-            string lineaLectura = sr.ReadLine();
             string permutacion;
             p10 = new int[10];
             p8 = new int[8];
@@ -380,54 +429,96 @@ namespace Libreria_ED2
             ipinv = new int[8];
             ep = new int[8];
             p4 = new int[4];
-            while (lineaLectura != null)
-            {
-                string[] div1 = lineaLectura.Split(':');
-                string[] div2 = div1[1].Split(',');
-                switch (div1[0])
-                {
-                    case "p10":
-                        for (int i = 0; i < p10.Length; i++)
-                        {
-                            p10[i] = Convert.ToInt32(div2[i]);
-                        }
-                        break;
-                    case "p8":
-                        for (int i = 0; i < p8.Length; i++)
-                        {
-                            p8[i] = Convert.ToInt32(div2[i]);
-                        }
-                        break;
-                    case "ip":
-                        for (int i = 0; i < ip.Length; i++)
-                        {
-                            ip[i] = Convert.ToInt32(div2[i]);
-                        }
-                        break;
-                    case "ip-1":
-                        for (int i = 0; i < ipinv.Length; i++)
-                        {
-                            ipinv[i] = Convert.ToInt32(div2[i]);
-                        }
-                        break;
-                    case "ep":
-                        for (int i = 0; i < ep.Length; i++)
-                        {
-                            ep[i] = Convert.ToInt32(div2[i]);
-                        }
-                        break;
-                    case "p4":
-                        for (int i = 0; i < p4.Length; i++)
-                        {
-                            p4[i] = Convert.ToInt32(div2[i]);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                lineaLectura = sr.ReadLine();
 
+            string lineaLectura = sr.ReadLine();
+            string[] div = lineaLectura.Split(',');
+            for (int i = 0; i < p10.Length; i++)
+            {
+                p10[i] = Convert.ToInt32(div[i]) - 1;
             }
+
+            lineaLectura = sr.ReadLine();
+            div = lineaLectura.Split(',');
+            for (int i = 0; i < p8.Length; i++)
+            {
+                p8[i] = Convert.ToInt32(div[i]) - 1;
+            }
+
+            lineaLectura = sr.ReadLine();
+            div = lineaLectura.Split(',');
+            for (int i = 0; i < p4.Length; i++)
+            {
+                p4[i] = Convert.ToInt32(div[i]) - 1;
+            }
+
+            lineaLectura = sr.ReadLine();
+            div = lineaLectura.Split(',');
+            for (int i = 0; i < ep.Length; i++)
+            {
+                ep[i] = Convert.ToInt32(div[i]) - 1;
+            }
+            lineaLectura = sr.ReadLine();
+            div = lineaLectura.Split(',');
+            for (int i = 0; i < ip.Length; i++)
+            {
+                ip[i] = Convert.ToInt32(div[i]) - 1;
+            }
+            lineaLectura = sr.ReadLine();
+            div = lineaLectura.Split(',');
+            for (int i = 0; i < ipinv.Length; i++)
+            {
+                ipinv[i] = Convert.ToInt32(div[i]) - 1;
+            }
+
+            sr.Close();
+            //while (lineaLectura != null)
+            //{
+            //    string[] div1 = lineaLectura.Split(':');
+            //    string[] div2 = div1[1].Split(',');
+            //    switch (div1[0])
+            //    {
+            //        case "p10":
+            //            for (int i = 0; i < p10.Length; i++)
+            //            {
+            //                p10[i] = Convert.ToInt32(div2[i]);
+            //            }
+            //            break;
+            //        case "p8":
+            //            for (int i = 0; i < p8.Length; i++)
+            //            {
+            //                p8[i] = Convert.ToInt32(div2[i]);
+            //            }
+            //            break;
+            //        case "ip":
+            //            for (int i = 0; i < ip.Length; i++)
+            //            {
+            //                ip[i] = Convert.ToInt32(div2[i]);
+            //            }
+            //            break;
+            //        case "ip-1":
+            //            for (int i = 0; i < ipinv.Length; i++)
+            //            {
+            //                ipinv[i] = Convert.ToInt32(div2[i]);
+            //            }
+            //            break;
+            //        case "ep":
+            //            for (int i = 0; i < ep.Length; i++)
+            //            {
+            //                ep[i] = Convert.ToInt32(div2[i]);
+            //            }
+            //            break;
+            //        case "p4":
+            //            for (int i = 0; i < p4.Length; i++)
+            //            {
+            //                p4[i] = Convert.ToInt32(div2[i]);
+            //            }
+            //            break;
+            //        default:
+            //            break;
+            //    }
+            //    lineaLectura = sr.ReadLine();
+
+            //}
             //entp10 = entrada-permutacion10, salp10 = salida permutacion10
             char[] entp10 = llavearreglo;
             char[] salp10;
@@ -455,10 +546,13 @@ namespace Libreria_ED2
             Console.WriteLine(llave1);
             Console.WriteLine(llave2);
 
-            BinaryReader br;
-            BinaryWriter bw = new BinaryWriter(new FileStream(dirEscritura + nombre + ".sdes", FileMode.Create));
+            BinaryReader br = new BinaryReader(new FileStream(dirLectura, FileMode.OpenOrCreate));
+            string nombreOriginal = br.ReadString();
+            long posicionLectura = br.BaseStream.Position;
+            br.Close();
+            BinaryWriter bw = new BinaryWriter(new FileStream(dirEscritura + nombreOriginal, FileMode.Create));
             bw.Close();
-            long posicionLectura = 0;
+            
             long posicionEscritura = 0;
             byte[] bufferLectura = new byte[1024];
             int cantidadLeida = 0;
@@ -502,7 +596,7 @@ namespace Libreria_ED2
 
                 }
 
-                bw = new BinaryWriter(new FileStream(dirEscritura + nombre + ".sdes", FileMode.OpenOrCreate));
+                bw = new BinaryWriter(new FileStream(dirEscritura + nombreOriginal, FileMode.OpenOrCreate));
                 bw.BaseStream.Position = posicionEscritura;
                 bw.Write(bytesEscritura);
                 posicionEscritura = bw.BaseStream.Position;
@@ -511,6 +605,7 @@ namespace Libreria_ED2
 
             } while (cantidadLeida == longitudBuffer);
 
+            return nombreOriginal;
         }
     }
 }
