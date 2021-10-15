@@ -23,7 +23,7 @@ namespace Lab_Cifrados.Controllers
 
         [HttpPost]
         [Route("cipher/{method}")]
-        public async Task<IActionResult> Comprimir([FromForm] SubirArchivo objetoArchivo, string method, [FromForm]string Key)
+        public async Task<IActionResult> Cifrar([FromForm] SubirArchivo objetoArchivo, string method, [FromForm]string Key)
         {
             if (objetoArchivo.File.Length > 0)
             {
@@ -76,8 +76,45 @@ namespace Lab_Cifrados.Controllers
         }
 
         [HttpPost]
+        [Route("sdes/cipher/{nombre}")]
+        public async Task<IActionResult> CifrarSDES([FromForm] SubirArchivo objetoArchivo, string nombre, [FromForm] string Key)
+        {
+            int llave10bitsvalidar = Convert.ToInt32(Key);
+            if (objetoArchivo.File.Length > 0 && llave10bitsvalidar<1024)
+            {
+
+                if (!Directory.Exists(rutasDeSubida.WebRootPath + "\\Archivos\\"))
+                {
+                    Directory.CreateDirectory(rutasDeSubida.WebRootPath + "\\Archivos\\");
+                }
+                using (FileStream stream = System.IO.File.Create(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName))
+                {
+                    objetoArchivo.File.CopyTo(stream);
+                    stream.Flush();
+                }
+
+                string nombreArchivo = objetoArchivo.File.FileName;
+                string[] arregloNombre = nombreArchivo.Split('.');
+                nombreArchivo = arregloNombre[0];
+
+                CifradorSDES sdes = new CifradorSDES(1024);
+                sdes.Cifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", rutasDeSubida.WebRootPath + "\\Archivos\\" + "Permutaciones.txt", nombre, Convert.ToInt32(Key));
+
+                var bytesArchivo = System.IO.File.ReadAllBytesAsync(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombre + ".sdes");
+                var bytes = System.IO.File.ReadAllBytes(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombre + ".sdes");
+                var objetoStream = new MemoryStream(bytes);
+                return File(objetoStream, "application/octet-stream", nombre + ".sdes");
+
+            }
+            else
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
         [Route("decipher")]
-        public async Task<IActionResult> descomprimir([FromForm] SubirArchivo objetoArchivo,[FromForm] string Key)
+        public async Task<IActionResult> Decifrar([FromForm] SubirArchivo objetoArchivo,[FromForm] string Key)
         {
             if (objetoArchivo.File.Length > 0)
             {
@@ -123,6 +160,45 @@ namespace Lab_Cifrados.Controllers
                     return StatusCode(500);
                 }
                 
+            }
+            else
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
+        [Route("sdes/decipher")]
+        public async Task<IActionResult> DecifrarSDES([FromForm] SubirArchivo objetoArchivo, [FromForm] string Key)
+        {
+            int llave10bitsvalidar = Convert.ToInt32(Key);
+
+            if (objetoArchivo.File.Length > 0 && llave10bitsvalidar<1024)
+            {
+                
+                if (!Directory.Exists(rutasDeSubida.WebRootPath + "\\Archivos\\"))
+                {
+                    Directory.CreateDirectory(rutasDeSubida.WebRootPath + "\\Archivos\\");
+                }
+                using (FileStream stream = System.IO.File.Create(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName))
+                {
+                    objetoArchivo.File.CopyTo(stream);
+                    stream.Flush();
+                }
+
+                string nombreArchivo = objetoArchivo.File.FileName;
+                string[] arregloNombre = nombreArchivo.Split('.');
+                nombreArchivo = arregloNombre[0];
+                string extension = arregloNombre[1];
+
+                CifradorSDES sdes = new CifradorSDES(2048);
+                string nombreOriginal = sdes.Decifrar(rutasDeSubida.WebRootPath + "\\Archivos\\" + objetoArchivo.File.FileName, rutasDeSubida.WebRootPath + "\\Archivos\\", rutasDeSubida.WebRootPath + "\\Archivos\\" + "Permutaciones.txt", Convert.ToInt32(Key));
+
+                var bytesArchivo = System.IO.File.ReadAllBytesAsync(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreOriginal);
+                var bytes = System.IO.File.ReadAllBytes(rutasDeSubida.WebRootPath + "\\Archivos\\" + nombreOriginal);
+                var objetoStream = new MemoryStream(bytes);
+                return File(objetoStream, "application/octet-stream", nombreOriginal);
+
             }
             else
             {
