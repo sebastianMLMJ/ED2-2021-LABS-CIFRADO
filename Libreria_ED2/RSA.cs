@@ -177,5 +177,18 @@ namespace Libreria_ED2
                 Fstream.Close();
             }
         }
+
+        public int ValorCifrado(int ValorCifrado, int d, int n)
+        {
+            var Valor = ValorCifrado % n;
+            var Multiplicador = 1;
+            for (var x = 0; x < d; x++)
+            {
+                Multiplicador = (Multiplicador * Valor) % n;
+            }
+            var ValorOriginal = Convert.ToInt32(Multiplicador);
+
+            return ValorOriginal;
+        }
     }
 }
