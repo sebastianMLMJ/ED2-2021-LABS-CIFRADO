@@ -6,12 +6,11 @@ using System.Numerics;
 
 namespace Libreria_ED2
 {
-    class RSA
+    public class RSA:CifradorInterfaz
     {
 
         const int longitud = 1000;
         public static int e;
-
         public int MCD(int a, int b)
         {
             int restante;
@@ -123,7 +122,6 @@ namespace Libreria_ED2
                 Fstream.Close();
             }
         }
-
         public void RSADecifrado(string RutaArchivo, string RutaLlave, string NuevoNombre)
         {
             StreamReader Lector = new StreamReader(RutaLlave);
@@ -149,10 +147,10 @@ namespace Libreria_ED2
                     {
                         using (var Writer = new BinaryWriter(Wstream))
                         {
-                            var bytes = new byte[length];
+                            var bytes = new byte[longitud];
                             while (Reader.BaseStream.Position != Reader.BaseStream.Length)
                             {
-                                bytes = Reader.ReadBytes(length * size);
+                                bytes = Reader.ReadBytes(longitud * size);
                                 int Contador = 1;
                                 string TextoDecifrado = "";
                                 foreach (var item in bytes)
@@ -177,7 +175,6 @@ namespace Libreria_ED2
                 Fstream.Close();
             }
         }
-
         public int ValorCifrado(int ValorCifrado, int d, int n)
         {
             var Valor = ValorCifrado % n;
@@ -189,6 +186,24 @@ namespace Libreria_ED2
             var ValorOriginal = Convert.ToInt32(Multiplicador);
 
             return ValorOriginal;
+        }
+        public bool ValidacionPrimo(int valor, int divisor)
+        {
+            if (valor / 2 < divisor)
+            {
+                return true;
+            }
+            else
+            {
+                if (valor % divisor == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return ValidacionPrimo(valor, divisor + 1);
+                }
+            }
         }
     }
 }

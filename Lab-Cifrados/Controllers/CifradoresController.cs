@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.IO;
 using Lab_Cifrados.Models;
 using Libreria_ED2;
+using System.IO.Compression;
+using System.Net.Mime;
 
 namespace Lab_Cifrados.Controllers
 {
@@ -208,7 +210,61 @@ namespace Lab_Cifrados.Controllers
             }
         }
 
+        public RSA rSA = new RSA();
 
+        [HttpGet("rsa/{p}/{q}")] 
+        public async Task<ActionResult> LlavesRSA(int p, int q)
+        {
+            if (System.IO.File.Exists(Environment.CurrentDirectory + "\\Keys.zip"))
+            {
+                System.IO.File.Delete(Environment.CurrentDirectory + "\\Keys.zip");
+            }
+
+            if (Directory.Exists($"temp"))
+            {
+                Directory.Delete($"temp", true);
+            }
+
+            Directory.CreateDirectory($"temp");
+
+            var ValorP = rSA.ValidacionPrimo(p, 2);
+            var ValorQ = rSA.ValidacionPrimo(q, 2);
+            if (ValorP == true && ValorQ == true)
+            {
+                rSA.GenerarLlaves(p, q);
+            }
+            else if ((ValorP != true && ValorQ != true) || (ValorP != true && ValorQ == true) || (ValorP == true && ValorQ != true))
+            {
+                return StatusCode(500);
+            }
+
+            var RutaZip = Path.Combine(Environment.CurrentDirectory, "Keys.zip");
+            var RutaTemp = Path.Combine(Environment.CurrentDirectory, "temp");
+
+            if (System.IO.File.Exists(RutaZip))
+            {
+                System.IO.File.Delete(RutaZip);
+            }
+
+            ZipFile.CreateFromDirectory(RutaTemp, RutaZip);
+
+            return await Download(RutaZip);
+
+        }
+
+        async Task<FileStreamResult> Download(string path)
+        {
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            Directory.Delete($"temp", true);
+            System.IO.File.Delete(Environment.CurrentDirectory + "\\Keys.zip");
+           
+            return File(memory, MediaTypeNames.Application.Octet, Path.GetFileName(path));
+        }
 
     }
 }
