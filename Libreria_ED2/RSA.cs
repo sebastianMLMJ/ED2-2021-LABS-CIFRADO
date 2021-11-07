@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Numerics;
 
 namespace Libreria_ED2
 {
@@ -70,6 +71,56 @@ namespace Libreria_ED2
                     Writer2.Write(n.ToString() + "," + e.ToString());
                 }
                 Ws2.Close();
+            }
+        }
+        public void RSACifrado(string RutaArchivo, string RutaLlave, string NuevoNombre)
+        {
+            StreamReader Lector = new StreamReader(RutaLlave);
+            var e = 0;
+            var n = 0;
+            while (!Lector.EndOfStream)
+            {
+                var Linea = Lector.ReadLine();
+                var Valores = Linea.Split(Convert.ToChar(","));
+                n = Convert.ToInt32(Valores[0]);
+                e = Convert.ToInt32(Valores[1]);
+            }
+            Lector.Close();
+            var RutaOrigen = Environment.CurrentDirectory + "\\temp";
+            int size = Convert.ToInt32(Math.Ceiling(Math.Log(n, 256)));
+            var RutaArchCifrado = Path.Combine(RutaOrigen, NuevoNombre + ".rsa");
+
+            using (var Fstream = new FileStream(RutaArchivo, FileMode.Open))
+            {
+                using (var Reader = new BinaryReader(Fstream))
+                {
+                    using (var Wstream = new FileStream(RutaArchCifrado, FileMode.OpenOrCreate))
+                    {
+                        using (var Writer = new BinaryWriter(Wstream))
+                        {
+                            var bytes = new byte[longitud];
+                            while (Reader.BaseStream.Position != Reader.BaseStream.Length)
+                            {
+                                bytes = Reader.ReadBytes(longitud);
+                                foreach (var item in bytes)
+                                {
+                                    BigInteger DataCifrada = BigInteger.ModPow(item, Convert.ToInt32(e), n);
+                                    string BinarioCifrado = Convert.ToString((int)(DataCifrada), 2);
+                                    string textoCifrado = BinarioCifrado.PadLeft(size * 8, '0');
+                                    while (textoCifrado.Length != 0)
+                                    {
+                                        Writer.Write(Convert.ToByte(textoCifrado.Substring(0, 8), 2));
+                                        textoCifrado = textoCifrado.Remove(0, 8);
+                                    }
+                                }
+                            }
+                            Writer.Close();
+                        }
+                        Wstream.Close();
+                    }
+                    Reader.Close();
+                }
+                Fstream.Close();
             }
         }
     }
