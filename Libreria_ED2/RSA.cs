@@ -123,5 +123,59 @@ namespace Libreria_ED2
                 Fstream.Close();
             }
         }
+
+        public void RSADecifrado(string RutaArchivo, string RutaLlave, string NuevoNombre)
+        {
+            StreamReader Lector = new StreamReader(RutaLlave);
+            var d = 0;
+            var n = 0;
+            while (!Lector.EndOfStream)
+            {
+                var Linea = Lector.ReadLine();
+                var Valores = Linea.Split(Convert.ToChar(","));
+                n = Convert.ToInt32(Valores[0]);
+                d = Convert.ToInt32(Valores[1]);
+            }
+            Lector.Close();
+            var RutaOrigen = Environment.CurrentDirectory + "\\temp";
+            int size = Convert.ToInt32(Math.Ceiling(Math.Log(n, 256)));
+            var RutaArchCifrado = Path.Combine(RutaOrigen, NuevoNombre + ".rsa");
+
+            using (var Fstream = new FileStream(RutaArchivo, FileMode.Open))
+            {
+                using (var Reader = new BinaryReader(Fstream))
+                {
+                    using (var Wstream = new FileStream(RutaArchCifrado, FileMode.OpenOrCreate))
+                    {
+                        using (var Writer = new BinaryWriter(Wstream))
+                        {
+                            var bytes = new byte[length];
+                            while (Reader.BaseStream.Position != Reader.BaseStream.Length)
+                            {
+                                bytes = Reader.ReadBytes(length * size);
+                                int Contador = 1;
+                                string TextoDecifrado = "";
+                                foreach (var item in bytes)
+                                {
+                                    TextoDecifrado += Convert.ToString((int)(item), 2).PadLeft(8, '0');
+                                    if (Contador % size == 0)
+                                    {
+                                        int BinarioCifrado = Convert.ToInt32(TextoDecifrado, 2);
+                                        int DataDecifrada = ValorCifrado(BinarioCifrado, d, n);
+                                        Writer.Write(Convert.ToByte(DataDecifrada));
+                                        TextoDecifrado = "";
+                                    }
+                                    Contador++;
+                                }
+                            }
+                            Writer.Close();
+                        }
+                        Wstream.Close();
+                    }
+                    Reader.Close();
+                }
+                Fstream.Close();
+            }
+        }
     }
 }
